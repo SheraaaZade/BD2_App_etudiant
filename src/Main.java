@@ -1,10 +1,11 @@
+import java.io.Console;
 import java.sql.*;
 import java.util.Scanner;
 
 public class Main {
     static Scanner scanner = new Scanner(System.in);
-   // private static String url = "jdbc:postgresql://localhost:5432/logiciel";
-    private static String url="jdbc:postgresql://172.24.2.6:5432/dbchehrazadouazzani";
+    private static String url = "jdbc:postgresql://localhost:5432/logiciel";
+    //private static String url="jdbc:postgresql://172.24.2.6:5432/dbchehrazadouazzani";
     private static int idEtudiant;
 
     public static void main(String[] args) {
@@ -21,30 +22,36 @@ public class Main {
         System.out.println("--------------MENU APPLICATION ETUDIANT----------------");
         System.out.println("-------------------------------------------------------");
 
-        //se connecter TODO
         System.out.print("Entrez votre mail: ");
         String mail = scanner.nextLine();
-        System.out.print("Entrez votre mot de passe: ");
+       System.out.print("Entrez votre mot de passe: ");
+   //     String password = new String(console.readPassword("Entrez votre mot de passe: "));
+
         String password = scanner.nextLine();
+        String gensel = BCrypt.gensalt();
+        String cryptePassword = BCrypt.hashpw(password, gensel);
+
         Connection conn = connexionDatabase();
         try {
             PreparedStatement ps = conn.prepareStatement("SELECT logiciel.chercher_id_etudiant(?)");
-            //PreparedStatement ps = conn.prepareStatement("SELECT logiciel.chercher_id_etudiant(?)");
             ps.setString(1, mail);
             ResultSet rs = ps.executeQuery();
             rs.next();
             idEtudiant = rs.getInt(1);
 
-            ps = conn.prepareStatement("SELECT logiciel.verifier_mdp_etudiant(?,?)");
-            //   PreparedStatement ps = conn.prepareStatement("SELECT logiciel.chercher_id_etudiant(?)");
+            ps = conn.prepareStatement("SELECT logiciel.recuperer_mdp_etudiant(?)");
             ps.setInt(1, idEtudiant);
-            ps.setString(2, password);
             rs = ps.executeQuery();
             rs.next();
-            if (rs.getBoolean(1))
+//            System.out.println(rs.getString(1));
+//            System.out.println(password);
+//            System.out.println(cryptePassword);
+            if (BCrypt.checkpw(password,cryptePassword)) {
                 System.out.println("--------> Connecté !  <---------");
-            else
+            } else {
                 System.out.println("---------> mot de passe erroné <---------");
+                System.exit(0);
+            }
         } catch (SQLException se) {
             System.out.println(se.getMessage());
             System.exit(1);
@@ -83,13 +90,11 @@ public class Main {
     }
 
     private static Connection connexionDatabase() {
-        //  String url = "jdbc:postgresql://localhost:5432/logiciel";
-        // String url="jdbc:postgresql://172.24.2.6:5432/dbchehrazadouazzani“  <-- A MODIFIER
         Connection conn = null;
 
         try {
-            conn=DriverManager.getConnection(url,"chehrazadouazzani","SQINPAG0B");
-          //  conn = DriverManager.getConnection(url, "postgres", "shera");
+            //    conn=DriverManager.getConnection(url,"chehrazadouazzani","SQINPAG0B");
+            conn = DriverManager.getConnection(url, "postgres", "shera");
         } catch (SQLException e) {
             System.out.println("Impossible de joindre le server !");
             System.exit(1);
@@ -110,10 +115,10 @@ public class Main {
             System.out.println();
             System.out.println("----------------------------------------------------------");
             while (rs.next()) {
-                 if(rs.getInt(1) == idEtudiant) {
+                if (rs.getInt(1) == idEtudiant) {
                     System.out.println(rs.getString(2) + "          \t" + rs.getString(3)
                             + "             \t" + rs.getString(4));
-               }
+                }
             }
             System.out.println("----------------------------------------------------------");
 
@@ -122,8 +127,9 @@ public class Main {
             System.exit(1);
         }
     }
+
     private static void sInscrireGroupe() {
-    //
+        //
         System.out.println("----------------S'inscrire dans un groupe----------------------");
         Connection conn = connexionDatabase();
         try {
@@ -151,6 +157,7 @@ public class Main {
             System.exit(1);
         }
     }
+
     private static void desinscrireGroupe() {
         System.out.println("----------------Se désinscrire d'un groupe----------------------");
         Connection conn = connexionDatabase();
@@ -177,6 +184,7 @@ public class Main {
             System.exit(1);
         }
     }
+
     private static void afficherMesProjets() {
         System.out.println("----------------------------Visualiser mes projets--------------------------------------");
         Connection conn = connexionDatabase();
@@ -190,9 +198,9 @@ public class Main {
             System.out.println();
             System.out.println("--------------------------------------------------------------------------------------");
             while (rs.next()) {
-                if(rs.getInt(1) == idEtudiant) {
+                if (rs.getInt(1) == idEtudiant) {
                     System.out.println(rs.getString(2) + "\t" + rs.getString(3)
-                            + "             \t" + rs.getString(4)+ "             \t" + rs.getInt(5));
+                            + "             \t" + rs.getString(4) + "             \t" + rs.getInt(5));
                 }
             }
             System.out.println("-------------------------------------------------------------------------------------");
@@ -202,6 +210,7 @@ public class Main {
             System.exit(1);
         }
     }
+
     private static void afficherProjetPasEncoreGroupe() {
         System.out.println("----------------------------Les projets où je n'ai pas encore de groupe--------------------------------------");
         Connection conn = connexionDatabase();
@@ -215,9 +224,9 @@ public class Main {
             System.out.println();
             System.out.println("-----------------------------------------------------------------------------------------------");
             while (rs.next()) {
-                if(rs.getInt(1) == idEtudiant) {
+                if (rs.getInt(1) == idEtudiant) {
                     System.out.println(rs.getString(2) + "\t" + rs.getString(3)
-                            + "             \t" + rs.getInt(4)+ "             \t" + rs.getDate(5)
+                            + "             \t" + rs.getInt(4) + "             \t" + rs.getDate(5)
                             + "             \t" + rs.getDate(6));
                 }
             }
@@ -228,6 +237,7 @@ public class Main {
             System.exit(1);
         }
     }
+
     private static void compositionGroupesIncomplets() {
         System.out.println("Entrez identifiant du projet: ");
         int idProjet = scanner.nextInt();
@@ -245,9 +255,9 @@ public class Main {
             System.out.println("-----------------------------------------------------------------------------------------------");
             while (rs.next()) {
                 //TODO ID projet
-                if(rs.getInt(1) == idProjet) {
+                if (rs.getInt(1) == idProjet) {
                     System.out.println(rs.getInt(2) + "\t\t\t\t" + rs.getString(3)
-                            + "\t\t\t\t" + rs.getString(4)+ "\t\t\t\t" + rs.getInt(5));
+                            + "\t\t\t\t" + rs.getString(4) + "\t\t\t\t" + rs.getInt(5));
                 }
             }
             System.out.println("-------------------------------------------------------------------------------------------------");
