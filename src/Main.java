@@ -3,7 +3,8 @@ import java.util.Scanner;
 
 public class Main {
     static Scanner scanner = new Scanner(System.in);
-    private static String url = "jdbc:postgresql://localhost:5432/logiciel";
+   // private static String url = "jdbc:postgresql://localhost:5432/logiciel";
+    private static String url="jdbc:postgresql://172.24.2.6:5432/dbchehrazadouazzani";
     private static int idEtudiant;
 
     public static void main(String[] args) {
@@ -21,34 +22,33 @@ public class Main {
         System.out.println("-------------------------------------------------------");
 
         //se connecter TODO
-//        System.out.print("Entrez votre mail: ");
-//        String mail = scanner.nextLine();
-//        System.out.print("Entrez votre mot de passe: ");
-//        String password = scanner.nextLine();
-//        Connection conn = connexionDatabase();
-//        try {
-//            PreparedStatement ps = conn.prepareStatement("SELECT logiciel.chercher_id_etudiant(?)");
-//            //   PreparedStatement ps = conn.prepareStatement("SELECT logiciel.chercher_id_etudiant(?)");
-//            ps.setString(1, mail);
-//            ResultSet rs = ps.executeQuery();
-//            rs.next();
-//            idEtudiant = rs.getInt(1);
-//            System.out.println(idEtudiant);
-//
-//            //verifier mot de passe
-//            ps = conn.prepareStatement("SELECT logiciel.verifier_mdp_etudiant(?)");
-//            //   PreparedStatement ps = conn.prepareStatement("SELECT logiciel.chercher_id_etudiant(?)");
-//            ps.setInt(1, idEtudiant);
-//            rs = ps.executeQuery();
-//            rs.next();
-//            if (rs.getBoolean(1))
-//                System.out.println("--------> Connecté !  <---------");
-//            else
-//                System.out.println("---------> mot de passe erroné <---------");
-//        } catch (SQLException se) {
-//            System.out.println(se.getMessage());
-//            System.exit(1);
-//        }
+        System.out.print("Entrez votre mail: ");
+        String mail = scanner.nextLine();
+        System.out.print("Entrez votre mot de passe: ");
+        String password = scanner.nextLine();
+        Connection conn = connexionDatabase();
+        try {
+            PreparedStatement ps = conn.prepareStatement("SELECT logiciel.chercher_id_etudiant(?)");
+            //PreparedStatement ps = conn.prepareStatement("SELECT logiciel.chercher_id_etudiant(?)");
+            ps.setString(1, mail);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            idEtudiant = rs.getInt(1);
+
+            ps = conn.prepareStatement("SELECT logiciel.verifier_mdp_etudiant(?,?)");
+            //   PreparedStatement ps = conn.prepareStatement("SELECT logiciel.chercher_id_etudiant(?)");
+            ps.setInt(1, idEtudiant);
+            ps.setString(2, password);
+            rs = ps.executeQuery();
+            rs.next();
+            if (rs.getBoolean(1))
+                System.out.println("--------> Connecté !  <---------");
+            else
+                System.out.println("---------> mot de passe erroné <---------");
+        } catch (SQLException se) {
+            System.out.println(se.getMessage());
+            System.exit(1);
+        }
         do {
             System.out.println("1- Afficher mes cours");
             System.out.println("2- S'inscrire dans un groupe");
@@ -88,8 +88,8 @@ public class Main {
         Connection conn = null;
 
         try {
-            //conn=DriverManager.getConnection(url,”dbchehrazadouazzani”,”SQINPAG0B”);
-            conn = DriverManager.getConnection(url, "postgres", "shera");
+            conn=DriverManager.getConnection(url,"chehrazadouazzani","SQINPAG0B");
+          //  conn = DriverManager.getConnection(url, "postgres", "shera");
         } catch (SQLException e) {
             System.out.println("Impossible de joindre le server !");
             System.exit(1);
@@ -110,11 +110,10 @@ public class Main {
             System.out.println();
             System.out.println("----------------------------------------------------------");
             while (rs.next()) {
-                //TODO
-              //  if(rs.getInt(1) == idEtudiant) {
+                 if(rs.getInt(1) == idEtudiant) {
                     System.out.println(rs.getString(2) + "          \t" + rs.getString(3)
                             + "             \t" + rs.getString(4));
-            //    }
+               }
             }
             System.out.println("----------------------------------------------------------");
 
@@ -137,10 +136,9 @@ public class Main {
             num_groupe = scanner.nextInt();
             ps.setInt(2, num_groupe);
 
-            // A CHANGER TODO METTRE L ID DE L ETUDIANT!!!!!!!!!!!!!!!!!!!!!
             //TODO  logiciel.taille_groupe() à faire la requête, cmt trouver le cours d'un étudiant ?
-            ps.setInt(1, 3);
-            //TODO -------------------------------------------
+            ps.setInt(1, idEtudiant);
+
             ResultSet rs = ps.executeQuery();
             rs.next();
             if (rs.getBoolean(1))
@@ -166,10 +164,7 @@ public class Main {
             num_groupe = scanner.nextInt();
             ps.setInt(2, num_groupe);
 
-            // A CHANGER TODO METTRE L ID DE L ETUDIANT!!!!!!!!!!!!!!!!!!!!!
-            //TODO
-            ps.setInt(1, 1);
-            //TODO -------------------------------------------
+            ps.setInt(1, idEtudiant);
             ResultSet rs = ps.executeQuery();
             rs.next();
             if (rs.getBoolean(1))
@@ -195,7 +190,7 @@ public class Main {
             System.out.println();
             System.out.println("--------------------------------------------------------------------------------------");
             while (rs.next()) {
-                if(rs.getInt(1) == 1) {
+                if(rs.getInt(1) == idEtudiant) {
                     System.out.println(rs.getString(2) + "\t" + rs.getString(3)
                             + "             \t" + rs.getString(4)+ "             \t" + rs.getInt(5));
                 }
@@ -220,7 +215,7 @@ public class Main {
             System.out.println();
             System.out.println("-----------------------------------------------------------------------------------------------");
             while (rs.next()) {
-                if(rs.getInt(1) == 1) {
+                if(rs.getInt(1) == idEtudiant) {
                     System.out.println(rs.getString(2) + "\t" + rs.getString(3)
                             + "             \t" + rs.getInt(4)+ "             \t" + rs.getDate(5)
                             + "             \t" + rs.getDate(6));
