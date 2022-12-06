@@ -1,16 +1,14 @@
-import java.io.Console;
 import java.sql.*;
 import java.util.Scanner;
 
-public class Main {
+public class appEtudiant {
     static Scanner scanner = new Scanner(System.in);
     private static String url = "jdbc:postgresql://localhost:5432/logiciel";
     //private static String url="jdbc:postgresql://172.24.2.6:5432/dbchehrazadouazzani";
     private static int idEtudiant;
+    private static Connection conn;
 
-    public static void main(String[] args) {
-
-        int choix;
+    public appEtudiant() {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
@@ -18,44 +16,78 @@ public class Main {
             System.exit(1);
         }
 
+        try {
+            //    conn=DriverManager.getConnection(url,"chehrazadouazzani","SQINPAG0B");
+            conn = DriverManager.getConnection(url, "postgres", "shera");
+        } catch (SQLException e) {
+            System.out.println("Impossible de joindre le server !");
+            System.exit(1);
+        }
+        try {
+            preparedStatement();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.exit(1);
+        }
+    }
+
+    private static PreparedStatement ps1;
+    private static PreparedStatement ps2;
+    private static PreparedStatement ps3;
+    private static PreparedStatement ps4;
+    private static PreparedStatement ps5;
+    private static PreparedStatement ps6;
+    private static PreparedStatement ps7;
+
+    public void preparedStatement() throws SQLException {
+        ps1 = conn.prepareStatement("SELECT logiciel.chercher_id_etudiant(?)");
+        ps2 = conn.prepareStatement("SELECT logiciel.recuperer_mdp_etudiant(?)");
+        ps3 = conn.prepareStatement("SELECT * FROM logiciel.afficher_mes_cours");
+        ps4 = conn.prepareStatement("SELECT logiciel.inscrire_etudiant_groupe(?,?,?)");
+        ps5 = conn.prepareStatement("SELECT logiciel.retirer_etudiant(?,?)");
+        ps6 = conn.prepareStatement("SELECT * FROM logiciel.afficher_projets_pas_encore_de_groupe");
+        ps7 = conn.prepareStatement("SELECT * FROM logiciel.afficher_composition_groupes_incomplets");
+    }
+
+    public static void main(String[] args) throws SQLException {
+        appEtudiant app = new appEtudiant();
+        int choix;
         System.out.println("-------------------------------------------------------");
         System.out.println("--------------MENU APPLICATION ETUDIANT----------------");
         System.out.println("-------------------------------------------------------");
 
         System.out.print("Entrez votre mail: ");
         String mail = scanner.nextLine();
-       System.out.print("Entrez votre mot de passe: ");
-   //     String password = new String(console.readPassword("Entrez votre mot de passe: "));
+        System.out.print("Entrez votre mot de passe: ");
+        //     String password = new String(console.readPassword("Entrez votre mot de passe: "));
 
         String password = scanner.nextLine();
-        String gensel = BCrypt.gensalt();
-        String cryptePassword = BCrypt.hashpw(password, gensel);
+//        String gensel = BCrypt.gensalt();
+//        String cryptePassword = BCrypt.hashpw(password, gensel);
 
-        Connection conn = connexionDatabase();
-        try {
-            PreparedStatement ps = conn.prepareStatement("SELECT logiciel.chercher_id_etudiant(?)");
-            ps.setString(1, mail);
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            idEtudiant = rs.getInt(1);
+        ps1.setString(1, mail);
+        ResultSet rs = ps1.executeQuery();
+        rs.next();
+        idEtudiant = rs.getInt(1);
 
-            ps = conn.prepareStatement("SELECT logiciel.recuperer_mdp_etudiant(?)");
-            ps.setInt(1, idEtudiant);
-            rs = ps.executeQuery();
-            rs.next();
-//            System.out.println(rs.getString(1));
+        ps2.setInt(1, idEtudiant);
+        rs = ps2.executeQuery();
+        if (rs.next()) {
+            //         System.out.println(rs.getString(1));
 //            System.out.println(password);
-//            System.out.println(cryptePassword);
-            if (BCrypt.checkpw(password,cryptePassword)) {
-                System.out.println("--------> Connecté !  <---------");
-            } else {
-                System.out.println("---------> mot de passe erroné <---------");
-                System.exit(0);
-            }
-        } catch (SQLException se) {
-            System.out.println(se.getMessage());
-            System.exit(1);
+            //      System.out.println(cryptePassword);
+//            if (BCrypt.checkpw(password, rs.getString(1))) {
+//                System.out.println("--------> Connecté !  <---------");
+//            } else {
+//                System.out.println("---------> mot de passe erroné <---------");
+//                System.exit(0);
+//            }
+
+        } else {
+            System.out.println("Non trouvé");
+            System.exit(0);
         }
+
         do {
             System.out.println("1- Afficher mes cours");
             System.out.println("2- S'inscrire dans un groupe");
@@ -89,25 +121,10 @@ public class Main {
         } while (choix >= 1 && choix <= 6);
     }
 
-    private static Connection connexionDatabase() {
-        Connection conn = null;
-
-        try {
-            //    conn=DriverManager.getConnection(url,"chehrazadouazzani","SQINPAG0B");
-            conn = DriverManager.getConnection(url, "postgres", "shera");
-        } catch (SQLException e) {
-            System.out.println("Impossible de joindre le server !");
-            System.exit(1);
-        }
-        return conn;
-    }
-
     private static void afficherMesCours() {
         System.out.println("--------------------Mes cours---------------------------");
-        Connection conn = connexionDatabase();
         try {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM logiciel.afficher_mes_cours");
-            ResultSet rs = ps.executeQuery();
+            ResultSet rs = ps3.executeQuery();
             ResultSetMetaData resultSetMetaData = rs.getMetaData();
             for (int i = 2; i <= resultSetMetaData.getColumnCount(); i++) {
                 System.out.print(resultSetMetaData.getColumnName(i) + "          ");
@@ -129,23 +146,18 @@ public class Main {
     }
 
     private static void sInscrireGroupe() {
-        //
         System.out.println("----------------S'inscrire dans un groupe----------------------");
-        Connection conn = connexionDatabase();
         try {
-            PreparedStatement ps = conn.prepareStatement("SELECT logiciel.inscrire_etudiant_groupe(?,?,?)");
-            int num_groupe, num_projet;
-            System.out.print("Entrez le numéro du projet: ");
-            num_projet = scanner.nextInt();
-            ps.setInt(3, num_projet);
-            System.out.print("Entrez le numéro du groupe: ");
-            num_groupe = scanner.nextInt();
-            ps.setInt(2, num_groupe);
+            ps4.setInt(1, idEtudiant);
+            System.out.print("Entrez le numéro de groupe du projet: ");
+            int numGroupe = scanner.nextInt();
+            ps4.setInt(2, numGroupe);
+            System.out.print("Entrez l'identifiant du projet: ");
+            String valeur = scanner.nextLine();
+            valeur = scanner.nextLine();
+            ps4.setString(3, valeur);
 
-            //TODO  logiciel.taille_groupe() à faire la requête, cmt trouver le cours d'un étudiant ?
-            ps.setInt(1, idEtudiant);
-
-            ResultSet rs = ps.executeQuery();
+            ResultSet rs = ps4.executeQuery();
             rs.next();
             if (rs.getBoolean(1))
                 System.out.println("--------> INSCRIT !  <---------");
@@ -160,19 +172,14 @@ public class Main {
 
     private static void desinscrireGroupe() {
         System.out.println("----------------Se désinscrire d'un groupe----------------------");
-        Connection conn = connexionDatabase();
         try {
-            PreparedStatement ps = conn.prepareStatement("SELECT logiciel.retirer_etudiant(?,?,?)");
-            int num_groupe, num_projet;
-            System.out.print("Entrez le numéro du projet: ");
-            num_projet = scanner.nextInt();
-            ps.setInt(3, num_projet);
-            System.out.print("Entrez le numéro du groupe: ");
-            num_groupe = scanner.nextInt();
-            ps.setInt(2, num_groupe);
+            ps5.setInt(1, idEtudiant);
+            System.out.print("Entrez l'identifiant du projet: ");
+            String valeur = scanner.nextLine();
+            valeur = scanner.nextLine();
+            ps5.setString(2, valeur);
 
-            ps.setInt(1, idEtudiant);
-            ResultSet rs = ps.executeQuery();
+            ResultSet rs = ps5.executeQuery();
             rs.next();
             if (rs.getBoolean(1))
                 System.out.println("--------> DESINSCRIT !  <---------");
@@ -187,7 +194,6 @@ public class Main {
 
     private static void afficherMesProjets() {
         System.out.println("----------------------------Visualiser mes projets--------------------------------------");
-        Connection conn = connexionDatabase();
         try {
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM logiciel.afficher_lesProjets_d_etudiant");
             ResultSet rs = ps.executeQuery();
@@ -211,60 +217,48 @@ public class Main {
         }
     }
 
-    private static void afficherProjetPasEncoreGroupe() {
+    private static void afficherProjetPasEncoreGroupe() throws SQLException {
         System.out.println("----------------------------Les projets où je n'ai pas encore de groupe--------------------------------------");
-        Connection conn = connexionDatabase();
-        try {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM logiciel.afficher_projets_pas_encore_de_groupe");
-            ResultSet rs = ps.executeQuery();
-            ResultSetMetaData resultSetMetaData = rs.getMetaData();
-            for (int i = 2; i <= resultSetMetaData.getColumnCount(); i++) {
-                System.out.print(resultSetMetaData.getColumnName(i) + "          \t");
-            }
-            System.out.println();
-            System.out.println("-----------------------------------------------------------------------------------------------");
-            while (rs.next()) {
-                if (rs.getInt(1) == idEtudiant) {
-                    System.out.println(rs.getString(2) + "\t" + rs.getString(3)
-                            + "             \t" + rs.getInt(4) + "             \t" + rs.getDate(5)
-                            + "             \t" + rs.getDate(6));
-                }
-            }
-            System.out.println("-------------------------------------------------------------------------------------------------");
-
-        } catch (SQLException se) {
-            System.out.println(se.getMessage());
-            System.exit(1);
+//TODO la requête est fausse, normalement M.Damas pas inscrit au cours d'APOO
+        ResultSet rs = ps6.executeQuery();
+        ResultSetMetaData resultSetMetaData = rs.getMetaData();
+        for (int i = 2; i <= resultSetMetaData.getColumnCount(); i++) {
+            System.out.print(resultSetMetaData.getColumnName(i) + "\t\t\t\t");
         }
+        System.out.println();
+        System.out.println("-----------------------------------------------------------------------------------------------");
+        while (rs.next()) {
+            if (rs.getInt(1) == idEtudiant) {
+                System.out.println(rs.getString(2) + "\t\t\t\t" + rs.getString(3)
+                        + "\t\t\t\t" + rs.getString(4) + "\t\t\t\t" + rs.getDate(5)
+                        + "\t\t\t\t" + rs.getDate(6));
+            }
+        }
+        System.out.println("-------------------------------------------------------------------------------------------------");
+
     }
 
-    private static void compositionGroupesIncomplets() {
-        System.out.println("Entrez identifiant du projet: ");
-        int idProjet = scanner.nextInt();
+    private static void compositionGroupesIncomplets() throws SQLException {
+        System.out.print("Entrez identifiant du projet: ");
+        String valeur = scanner.nextLine();
         System.out.println();
         System.out.println("----------------------------Les projets où je n'ai pas encore de groupe--------------------------------------");
-        Connection conn = connexionDatabase();
-        try {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM logiciel.afficher_composition_groupes_incomplets");
-            ResultSet rs = ps.executeQuery();
-            ResultSetMetaData resultSetMetaData = rs.getMetaData();
-            for (int i = 2; i <= resultSetMetaData.getColumnCount(); i++) {
-                System.out.print(resultSetMetaData.getColumnName(i) + "          \t");
-            }
-            System.out.println();
-            System.out.println("-----------------------------------------------------------------------------------------------");
-            while (rs.next()) {
-                //TODO ID projet
-                if (rs.getInt(1) == idProjet) {
-                    System.out.println(rs.getInt(2) + "\t\t\t\t" + rs.getString(3)
-                            + "\t\t\t\t" + rs.getString(4) + "\t\t\t\t" + rs.getInt(5));
-                }
-            }
-            System.out.println("-------------------------------------------------------------------------------------------------");
 
-        } catch (SQLException se) {
-            System.out.println(se.getMessage());
-            System.exit(1);
+        ResultSet rs = ps7.executeQuery();
+        ResultSetMetaData resultSetMetaData = rs.getMetaData();
+        for (int i = 2; i <= resultSetMetaData.getColumnCount(); i++) {
+            System.out.print(resultSetMetaData.getColumnName(i) + "\t\t\t");
         }
+        System.out.println();
+        System.out.println("-----------------------------------------------------------------------------------------------");
+        while (rs.next()) {
+            if (rs.getInt(1) == idEtudiant) {
+                System.out.println("\t\t"+rs.getInt(2)+"\t\t\t\t"+rs.getString(3) + "\t\t\t\t\t"
+                        + rs.getString(4) + "\t\t\t\t" + rs.getString(5)
+                        + "\t\t\t\t" + rs.getInt(6));
+            }
+        }
+        System.out.println("-------------------------------------------------------------------------------------------------");
+
     }
 }
