@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c39a6db-bdce-4820-bed8-e06afe110404" name="Changes" comment="add BCrypt and fixed issues">
+    <list default="true" id="2c39a6db-bdce-4820-bed8-e06afe110404" name="Changes" comment="refactored code + fixed some issues">
+      <change afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/dbEtudiant.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/appEtudiant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/appEtudiant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/appEtudiant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppEtudiant.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +39,8 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false"
+    "WebServerToolWindowFactoryState": "false",
+    "node.js.selected.package.tslint": "(autodetect)"
   },
   "keyToStringList": {
     "DatabaseDriversLRU": [
@@ -52,9 +54,16 @@
       <recent name="C:\Users\chehr\OneDrive\Bureau\Cours\SQL\App_etudiant\lib" />
     </key>
   </component>
-  <component name="RunManager">
-    <configuration name="appEtudiant" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="appEtudiant" />
+  <component name="RunManager" selected="Application.Main">
+    <configuration name="AppEtudiant" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="AppEtudiant" />
+      <module name="App_etudiant" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="App_etudiant" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -62,7 +71,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.appEtudiant" />
+        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.AppEtudiant" />
       </list>
     </recent_temporary>
   </component>
@@ -107,6 +117,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="add BCrypt and fixed issues" />
-    <option name="LAST_COMMIT_MESSAGE" value="add BCrypt and fixed issues" />
+    <MESSAGE value="refactored code + fixed some issues" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactored code + fixed some issues" />
   </component>
 </project>
