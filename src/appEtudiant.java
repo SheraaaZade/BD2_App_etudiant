@@ -3,8 +3,8 @@ import java.util.Scanner;
 
 public class appEtudiant {
     static Scanner scanner = new Scanner(System.in);
-    private static String url = "jdbc:postgresql://localhost:5432/postgres";
-    //private static String url="jdbc:postgresql://172.24.2.6:5432/dbchehrazadouazzani";
+    //  private static String url = "jdbc:postgresql://localhost:5432/logiciel";
+    private static String url = "jdbc:postgresql://172.24.2.6:5432/dbchehrazadouazzani";
     private static int idEtudiant;
     private static Connection conn;
 
@@ -17,8 +17,8 @@ public class appEtudiant {
         }
 
         try {
-            //    conn=DriverManager.getConnection(url,"chehrazadouazzani","SQINPAG0B");
-            conn = DriverManager.getConnection(url, "postgres", "Mariam-16");
+            conn = DriverManager.getConnection(url, "chehrazadouazzani", "SQINPAG0B");
+            // conn = DriverManager.getConnection(url, "postgres", "shera");
         } catch (SQLException e) {
             System.out.println("Impossible de joindre le server !");
             System.exit(1);
@@ -73,15 +73,12 @@ public class appEtudiant {
         ps2.setInt(1, idEtudiant);
         rs = ps2.executeQuery();
         if (rs.next()) {
-            //         System.out.println(rs.getString(1));
-//            System.out.println(password);
-            //      System.out.println(cryptePassword);
-//            if (BCrypt.checkpw(password, rs.getString(1))) {
-//                System.out.println("--------> Connecté !  <---------");
-//            } else {
-//                System.out.println("---------> mot de passe erroné <---------");
-//                System.exit(0);
-//            }
+            if (BCrypt.checkpw(password, rs.getString(1))) {
+                System.out.println("--------> Connecté !  <---------");
+            } else {
+                System.out.println("---------> mot de passe erroné <---------");
+                System.exit(0);
+            }
 
         } else {
             System.out.println("Non trouvé");
@@ -97,7 +94,7 @@ public class appEtudiant {
             System.out.println("6- Afficher les groupes incomplets d'un projet");
             System.out.println();
             System.out.print("Entrez votre choix: ");
-            choix = scanner.nextInt();
+            choix = Integer.parseInt( scanner.nextLine());
 
             switch (choix) {
                 case 1:
