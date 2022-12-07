@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 public class appEtudiant {
     static Scanner scanner = new Scanner(System.in);
-    private static String url = "jdbc:postgresql://localhost:5432/logiciel";
+    private static String url = "jdbc:postgresql://localhost:5432/postgres";
     //private static String url="jdbc:postgresql://172.24.2.6:5432/dbchehrazadouazzani";
     private static int idEtudiant;
     private static Connection conn;
@@ -18,7 +18,7 @@ public class appEtudiant {
 
         try {
             //    conn=DriverManager.getConnection(url,"chehrazadouazzani","SQINPAG0B");
-            conn = DriverManager.getConnection(url, "postgres", "shera");
+            conn = DriverManager.getConnection(url, "postgres", "Mariam-16");
         } catch (SQLException e) {
             System.out.println("Impossible de joindre le server !");
             System.exit(1);
@@ -149,13 +149,14 @@ public class appEtudiant {
         System.out.println("----------------S'inscrire dans un groupe----------------------");
         try {
             ps4.setInt(1, idEtudiant);
-            System.out.print("Entrez le numéro de groupe du projet: ");
-            int numGroupe = scanner.nextInt();
-            ps4.setInt(2, numGroupe);
             System.out.print("Entrez l'identifiant du projet: ");
             String valeur = scanner.nextLine();
             valeur = scanner.nextLine();
             ps4.setString(3, valeur);
+            System.out.print("Entrez le numéro de groupe du projet: ");
+            int numGroupe = scanner.nextInt();
+            ps4.setInt(2, numGroupe);
+
 
             ResultSet rs = ps4.executeQuery();
             rs.next();
