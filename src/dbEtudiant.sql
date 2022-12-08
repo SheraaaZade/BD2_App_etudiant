@@ -5,7 +5,7 @@
 ----Application etudiant
 -------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION  logiciel.chercher_id_etudiant(_mail VARCHAR)
+CREATE OR REPLACE FUNCTION logiciel.chercher_id_etudiant(_mail VARCHAR)
     RETURNS INTEGER AS
 $$
 DECLARE
@@ -40,7 +40,7 @@ $$ LANGUAGE plpgsql;
 
 
 --1
-CREATE  OR REPLACE VIEW logiciel.afficher_mes_cours AS
+CREATE OR REPLACE VIEW logiciel.afficher_mes_cours AS
 SELECT ic.etudiant                                                              as "Etudiant",
        c.code_cours                                                             as "Code cours",
        c.nom                                                                    as "Nom",
@@ -51,12 +51,12 @@ FROM logiciel.cours c
 group by c.nom, c.code_cours, ic.etudiant;
 
 --2
-CREATE  OR REPLACE FUNCTION logiciel.inscrire_etudiant_groupe(_etudiant INTEGER, _num_groupe INTEGER, _identifiant_projet VARCHAR)
+CREATE OR REPLACE FUNCTION logiciel.inscrire_etudiant_groupe(_etudiant INTEGER, _num_groupe INTEGER, _identifiant_projet VARCHAR)
     RETURNS BOOLEAN AS
 $$
 DECLARE
     _num_projet INTEGER;
-    _id_groupe INTEGER;
+    _id_groupe  INTEGER;
 BEGIN
     SELECT p.num_projet
     FROM logiciel.projets p
@@ -69,10 +69,11 @@ BEGIN
 
     SELECT g.id_groupe
     FROM logiciel.groupes g
-    WHERE g.num_groupe = _num_groupe AND g.projet = _num_projet
+    WHERE g.num_groupe = _num_groupe
+      AND g.projet = _num_projet
     INTO _id_groupe;
 
-    IF(_id_groupe IS NULL)THEN
+    IF (_id_groupe IS NULL) THEN
         RAISE 'Numéro de groupe inexistant';
     end if;
 
@@ -83,7 +84,7 @@ end;
 $$ LANGUAGE plpgsql;
 
 
-CREATE  OR REPLACE FUNCTION logiciel.incrementer_nb_inscrits()
+CREATE OR REPLACE FUNCTION logiciel.incrementer_nb_inscrits()
     RETURNS TRIGGER AS
 $$
 BEGIN
@@ -101,7 +102,7 @@ CREATE TRIGGER trigger_incrementer_nb_etudiant_dans_groupe
     FOR EACH ROW
 EXECUTE PROCEDURE logiciel.incrementer_nb_inscrits();
 
-CREATE  OR REPLACE FUNCTION logiciel.check_groupe_complet()
+CREATE OR REPLACE FUNCTION logiciel.check_groupe_complet()
     RETURNS TRIGGER AS
 $$
 DECLARE
@@ -118,7 +119,7 @@ BEGIN
     WHERE g.id_groupe = NEW.groupe
     INTO nb_inscrit;
 
-    IF (taille_gr = nb_inscrit ) THEN
+    IF (taille_gr = nb_inscrit) THEN
         UPDATE logiciel.groupes g
         SET complet = TRUE
         WHERE g.num_groupe = NEW.groupe;
@@ -134,7 +135,7 @@ CREATE TRIGGER trigger_groupe_complet
 EXECUTE PROCEDURE logiciel.check_groupe_complet();
 
 
-CREATE OR REPLACE  FUNCTION logiciel.taille_groupe()
+CREATE OR REPLACE FUNCTION logiciel.taille_groupe()
     RETURNS TRIGGER AS
 $$
 DECLARE
@@ -175,16 +176,18 @@ EXECUTE PROCEDURE logiciel.taille_groupe();
 -----------------------------------------------------------
 --3
 
-CREATE  OR REPLACE FUNCTION logiciel.retirer_etudiant(_etudiant INTEGER, _identifiant_projet VARCHAR)
+CREATE OR REPLACE FUNCTION logiciel.retirer_etudiant(_etudiant INTEGER, _identifiant_projet VARCHAR)
     RETURNS BOOLEAN AS
 $$
 DECLARE
     _num_projet INTEGER;
 BEGIN
-    SELECT p.num_projet
-    FROM logiciel.projets p
-    WHERE p.identifiant_projet = _identifiant_projet
-    INTO _num_projet;
+    --     SELECT p.num_projet
+--     FROM logiciel.projets p
+--     WHERE p.identifiant_projet = _identifiant_projet
+--     INTO _num_projet;
+
+    SELECT logiciel.chercher_id_projet(_identifiant_projet) INTO _num_projet;
 
     IF (_num_projet IS NULL) THEN
         RAISE 'Identifiant du projet inexistant';
@@ -193,40 +196,39 @@ BEGIN
     DELETE
     FROM logiciel.inscriptions_groupes ig
     WHERE ig.etudiant = _etudiant
-      AND ig.projet = _num_projet;
+      AND ig.projet = _num_projet
+    RETURNING *;
     RETURN TRUE;
 end;
 $$ LANGUAGE plpgsql;
 
 --TRIGGER décrémenter nb etudiant
-CREATE  OR REPLACE FUNCTION logiciel.decrementer_nb_etudiants()
+CREATE OR REPLACE FUNCTION logiciel.decrementer_nb_etudiants()
     RETURNS TRIGGER AS
 $$
 BEGIN
     UPDATE logiciel.groupes g
-    SET nombre_inscrits = nombre_inscrits - 1
-    WHERE g.id_groupe = OLD.id_groupe;
+    SET nombre_inscrits = nombre_inscrits - 1 AND complet = FALSE
+    WHERE g.id_groupe = OLD.groupe;
     RETURN OLD;
 end;
 $$ LANGUAGE plpgsql;
 
-CREATE  TRIGGER trigger_inc_nb_etudiant
+CREATE TRIGGER trigger_dec_nb_etudiant
     AFTER DELETE
-    on logiciel.groupes
+    on logiciel.inscriptions_groupes
     FOR EACH ROW
 EXECUTE PROCEDURE logiciel.decrementer_nb_etudiants();
 
-CREATE  OR REPLACE FUNCTION logiciel.groupe_deja_valide()
+CREATE OR REPLACE FUNCTION logiciel.groupe_deja_valide()
     RETURNS TRIGGER AS
 $$
 BEGIN
     IF (SELECT g.valide
         FROM logiciel.groupes g,
              logiciel.inscriptions_groupes ig
-        WHERE g.id_groupe = OLD.groupe
-          AND OLD.id_inscription_groupe = ig.id_inscription_groupe
-          AND ig.groupe = g.id_groupe
-          AND g.valide = TRUE) THEN
+        WHERE OLD.id_inscription_groupe = ig.id_inscription_groupe
+          AND ig.groupe = g.id_groupe) THEN
         RAISE 'Le groupe est déjà validé, impossible de quitter le groupe';
     end if;
     RETURN NEW;
@@ -239,14 +241,19 @@ CREATE TRIGGER trigger_est_groupe_valide
     FOR EACH ROW
 EXECUTE PROCEDURE logiciel.groupe_deja_valide();
 
-CREATE  OR REPLACE FUNCTION logiciel.etudiant_est_dans_groupe()
+CREATE OR REPLACE FUNCTION logiciel.etudiant_est_dans_groupe()
     RETURNS TRIGGER AS
 $$
+DECLARE
+    _id_etudiant INTEGER;
 BEGIN
-    IF NOT EXISTS(SELECT ig.etudiant
-                  FROM logiciel.inscriptions_groupes ig
-                  WHERE ig.id_inscription_groupe = OLD.id_inscription_groupe) THEN
-        RAISE 'Etudiant pas inscrit dans un groupe';
+    SELECT ig.etudiant
+    FROM logiciel.inscriptions_groupes ig
+    WHERE ig.id_inscription_groupe = OLD.id_inscription_groupe
+    INTO _id_etudiant;
+
+    IF (_id_etudiant IS NULL) THEN
+        RAISE 'Etudiant pas inscrit dans un groupe pour ce projet';
     end if;
 end;
 $$ LANGUAGE plpgsql;
@@ -260,7 +267,7 @@ EXECUTE PROCEDURE logiciel.etudiant_est_dans_groupe();
 
 -------------------------------------------------------------------------
 --4 Visualiser tous les projets des cours inscrits
-CREATE  OR REPLACE VIEW logiciel.afficher_lesProjets_d_etudiant AS
+CREATE OR REPLACE VIEW logiciel.afficher_lesProjets_d_etudiant AS
 SELECT ig.etudiant          as id_etudiant,
        p.identifiant_projet as Identifiant_projet,
        p.nom                as Nom,
@@ -275,7 +282,7 @@ ORDER BY p.identifiant_projet;
 -------------------------------------------------------------------------
 --5 Visualiser tous les projets où il n'a pas de groupe
 
-CREATE  OR REPLACE VIEW logiciel.afficher_projets_pas_encore_de_groupe AS
+CREATE OR REPLACE VIEW logiciel.afficher_projets_pas_encore_de_groupe AS
 SELECT DISTINCT ic.etudiant          as "id etudiant",
                 p.identifiant_projet as "Identifiant projet",
                 p.nom                as "Nom",
@@ -297,7 +304,7 @@ WHERE NOT EXISTS(SELECT ig.groupe
 -----------------------------------------------------------------------------
 -----6 Visualiser toutes les compositions de groupes incomplets d'un projet
 
-CREATE OR REPLACE  VIEW logiciel.afficher_composition_groupes_incomplets AS
+CREATE OR REPLACE VIEW logiciel.afficher_composition_groupes_incomplets AS
 SELECT e.id_etudiant,
        g.num_groupe                        as "Num groupe",
        p.identifiant_projet                as "Identifiant projet",
@@ -316,3 +323,9 @@ WHERE p.num_projet = g.projet
   AND ig.projet = p.num_projet
 group by p.identifiant_projet, g.num_groupe, e.nom, e.prenom, g.taille_groupe, g.nombre_inscrits, e.id_etudiant
 ORDER BY g.num_groupe;
+
+DELETE
+FROM logiciel.inscriptions_groupes
+WHERE etudiant = 1
+  AND projet = 1
+RETURNING *;

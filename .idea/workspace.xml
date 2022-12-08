@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c39a6db-bdce-4820-bed8-e06afe110404" name="Changes" comment="refactored code + fixed some issues">
-      <change afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/dbEtudiant.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/appEtudiant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppEtudiant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AppEtudiant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppEtudiant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +38,10 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "node.js.selected.package.tslint": "(autodetect)"
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
     "DatabaseDriversLRU": [
@@ -90,6 +91,7 @@
       <workItem from="1670342202187" duration="17177000" />
       <workItem from="1670409556222" duration="3115000" />
       <workItem from="1670414741060" duration="376000" />
+      <workItem from="1670474681325" duration="8304000" />
     </task>
     <task id="LOCAL-00001" summary="add BCrypt and fixed issues">
       <created>1670280899066</created>
