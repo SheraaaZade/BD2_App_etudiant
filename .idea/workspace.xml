@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c39a6db-bdce-4820-bed8-e06afe110404" name="Changes" comment="refactored code + fixed some issues">
+    <list default="true" id="2c39a6db-bdce-4820-bed8-e06afe110404" name="Changes" comment="fixed some issues and SQL">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AppEtudiant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppEtudiant.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/dbEtudiant.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/dbEtudiant.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,22 +33,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\chehr\OneDrive\Bureau\Cours\SQL\App_etudiant\src" />
@@ -91,7 +91,8 @@
       <workItem from="1670342202187" duration="17177000" />
       <workItem from="1670409556222" duration="3115000" />
       <workItem from="1670414741060" duration="376000" />
-      <workItem from="1670474681325" duration="8304000" />
+      <workItem from="1670474681325" duration="8653000" />
+      <workItem from="1670528671190" duration="8228000" />
     </task>
     <task id="LOCAL-00001" summary="add BCrypt and fixed issues">
       <created>1670280899066</created>
@@ -100,7 +101,14 @@
       <option name="project" value="LOCAL" />
       <updated>1670280899066</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="cleaned code + fixed some issues and SQL">
+      <created>1670488150026</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1670488150026</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -120,6 +128,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="add BCrypt and fixed issues" />
     <MESSAGE value="refactored code + fixed some issues" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactored code + fixed some issues" />
+    <MESSAGE value="cleaned code + fixed some issues and SQL" />
+    <MESSAGE value="fixed some issues and SQL" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed some issues and SQL" />
   </component>
 </project>

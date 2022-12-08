@@ -16,6 +16,25 @@ public class AppEtudiant {
     private PreparedStatement ps8;
     private PreparedStatement ps9;
 
+    /*
+    LISTE DES QUESTIONS
+    1- afficher msg personnaliser pour chaque erreur?
+        si ajouter un etudiant dans un groupe mais que le groupe est complet et que l'étudiant
+         est déjà inscrit dans ce groupe quel msg afficher?
+
+         ERREUR: la valeur d'une clé dupliquée rompt la contrainte unique « inscriptions_groupes_etudiant_projet_key »
+         Détail : La clé « (etudiant, projet)=(1, 3) » existe déjà.
+         Où  : instruction SQL « INSERT INTO logiciel.inscriptions_groupes(etudiant, groupe, projet)
+            VALUES (_etudiant, _id_groupe, _num_projet) »
+        fonction PL/pgsql logiciel.inscrire_etudiant_groupe(integer,integer,character varying),
+
+     2-
+     */
+
+
+
+
+
     /**
      * connect to postgresql and prepare statements and connect the student
      */
@@ -222,9 +241,8 @@ public class AppEtudiant {
         System.out.println("----------------------------Mes projets où je n'ai pas encore de groupe--------------------------------------");
         //TODO la requête est fausse, normalement M.Damas pas inscrit au cours d'APOO
 
-        ResultSet rs = null;
         try {
-            rs = ps7.executeQuery();
+            ResultSet rs = ps7.executeQuery();
             ResultSetMetaData resultSetMetaData = rs.getMetaData();
             for (int i = 2; i <= resultSetMetaData.getColumnCount(); i++) {
                 System.out.print(resultSetMetaData.getColumnName(i) + "\t\t\t\t");
@@ -326,7 +344,10 @@ public class AppEtudiant {
 //        -- --ne doit pas fonctionner le suivant:
 //        -- --SELECT logiciel.creer_groupes('projSD', 2, 2);
 //        --
+            psDemo = conn.prepareStatement("SELECT logiciel.creer_groupes('a', 2, 1)");
+            psDemo.executeQuery();
 //                --SELECT logiciel.creer_groupes('projSD', 3, 1);
+//                SELECT logiciel.creer_groupes('projSD', 3, 1);
 //        --
 //                -- --ne doit pas fonctionner le suivant:
 //        -- --SELECT logiciel.creer_groupes('projSD', 3, 1);
@@ -340,7 +361,7 @@ public class AppEtudiant {
 //        -- SELECT logiciel.inscrire_etudiant_groupe(1, 1, 1);
 //        -- SELECT logiciel.valider_un_groupe(1);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
         }
     }
 }

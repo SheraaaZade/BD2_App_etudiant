@@ -27,7 +27,7 @@ CREATE OR REPLACE FUNCTION logiciel.recuperer_mdp_etudiant(_id_etudiant INTEGER)
     RETURNS VARCHAR AS
 $$
 DECLARE
-    mdp_etudiant VARCHAR(100);
+    mdp_etudiant VARCHAR;
 BEGIN
     SELECT e.pass_word
     FROM logiciel.etudiants e
@@ -58,24 +58,25 @@ DECLARE
     _num_projet INTEGER;
     _id_groupe  INTEGER;
 BEGIN
-    SELECT p.num_projet
-    FROM logiciel.projets p
-    WHERE p.identifiant_projet = _identifiant_projet
-    INTO _num_projet;
-
-    IF (_num_projet IS NULL) THEN
-        RAISE 'identifiant projet inexistant !';
-    end if;
-
-    SELECT g.id_groupe
-    FROM logiciel.groupes g
-    WHERE g.num_groupe = _num_groupe
-      AND g.projet = _num_projet
-    INTO _id_groupe;
-
-    IF (_id_groupe IS NULL) THEN
-        RAISE 'Numéro de groupe inexistant';
-    end if;
+    SELECT logiciel.chercher_id_projet(_identifiant_projet) INTO _num_projet;
+    --     SELECT p.num_projet
+--     FROM logiciel.projets p
+--     WHERE p.identifiant_projet = _identifiant_projet
+--     INTO _num_projet;
+--
+--     IF (_num_projet IS NULL) THEN
+--         RAISE 'identifiant projet inexistant !';
+--     end if;
+    SELECT logiciel.groupe_existe(_identifiant_projet, _num_groupe) INTO _id_groupe;
+    --     SELECT g.id_groupe
+--     FROM logiciel.groupes g
+--     WHERE g.num_groupe = _num_groupe
+--       AND g.projet = _num_projet
+--     INTO _id_groupe;
+--
+--     IF (_id_groupe IS NULL) THEN
+--         RAISE 'Numéro de groupe inexistant';
+--     end if;
 
     INSERT INTO logiciel.inscriptions_groupes(etudiant, groupe, projet)
     VALUES (_etudiant, _id_groupe, _num_projet);
@@ -83,6 +84,25 @@ BEGIN
 end;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION logiciel.deja_inscrits()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    IF EXISTS(SELECT ig.id_inscription_groupe
+              FROM logiciel.inscriptions_groupes ig
+              WHERE ig.projet = OLD.projet
+                AND ig.etudiant = OLD.etudiant) THEN
+        RAISE 'Vous êtes déjà inscrit dans un groupe pour ce projet !';
+    end if;
+    RETURN NEW;
+end;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_etudiant_deja_inscrit_groupe
+    BEFORE INSERT
+    on logiciel.inscriptions_groupes
+    FOR EACH ROW
+EXECUTE PROCEDURE logiciel.deja_inscrits();
 
 CREATE OR REPLACE FUNCTION logiciel.incrementer_nb_inscrits()
     RETURNS TRIGGER AS
@@ -142,14 +162,6 @@ DECLARE
     nb_inscrits   INTEGER;
     taille_groupe INTEGER;
 BEGIN
-    --------------------A CORRIGER-----------------------------
---     IF NOT EXISTS(SELECT id_inscription_cours
---                   FROM logiciel.inscriptions_cours ic, logiciel.etudiants e
---                   WHERE  ic.etudiant = NEW.etudiant AND e.id_etudiant = NEW.etudiant
---                     AND ic.cours = ) THEN
---         RAISE 'Pas inscrit au cours !';
---     end if;
-
     SELECT g.nombre_inscrits
     FROM logiciel.groupes g
     WHERE g.id_groupe = NEW.groupe
@@ -182,22 +194,12 @@ $$
 DECLARE
     _num_projet INTEGER;
 BEGIN
-    --     SELECT p.num_projet
---     FROM logiciel.projets p
---     WHERE p.identifiant_projet = _identifiant_projet
---     INTO _num_projet;
-
     SELECT logiciel.chercher_id_projet(_identifiant_projet) INTO _num_projet;
-
-    IF (_num_projet IS NULL) THEN
-        RAISE 'Identifiant du projet inexistant';
-    end if;
 
     DELETE
     FROM logiciel.inscriptions_groupes ig
     WHERE ig.etudiant = _etudiant
-      AND ig.projet = _num_projet
-    RETURNING *;
+      AND ig.projet = _num_projet;
     RETURN TRUE;
 end;
 $$ LANGUAGE plpgsql;
@@ -208,7 +210,8 @@ CREATE OR REPLACE FUNCTION logiciel.decrementer_nb_etudiants()
 $$
 BEGIN
     UPDATE logiciel.groupes g
-    SET nombre_inscrits = nombre_inscrits - 1 AND complet = FALSE
+    SET nombre_inscrits = nombre_inscrits - 1,
+        complet         = FALSE
     WHERE g.id_groupe = OLD.groupe;
     RETURN OLD;
 end;
@@ -223,12 +226,17 @@ EXECUTE PROCEDURE logiciel.decrementer_nb_etudiants();
 CREATE OR REPLACE FUNCTION logiciel.groupe_deja_valide()
     RETURNS TRIGGER AS
 $$
+DECLARE
+    est_valide BOOLEAN;
 BEGIN
-    IF (SELECT g.valide
-        FROM logiciel.groupes g,
-             logiciel.inscriptions_groupes ig
-        WHERE OLD.id_inscription_groupe = ig.id_inscription_groupe
-          AND ig.groupe = g.id_groupe) THEN
+    SELECT g.valide
+    FROM logiciel.groupes g,
+         logiciel.inscriptions_groupes ig
+    WHERE OLD.id_inscription_groupe = ig.id_inscription_groupe
+      AND ig.groupe = g.id_groupe
+    INTO est_valide;
+
+    IF (est_valide = TRUE) THEN
         RAISE 'Le groupe est déjà validé, impossible de quitter le groupe';
     end if;
     RETURN NEW;
@@ -253,7 +261,7 @@ BEGIN
     INTO _id_etudiant;
 
     IF (_id_etudiant IS NULL) THEN
-        RAISE 'Etudiant pas inscrit dans un groupe pour ce projet';
+        RAISE 'Vous n êtes pas inscrit dans ce groupe de ce projet';
     end if;
 end;
 $$ LANGUAGE plpgsql;
@@ -297,8 +305,7 @@ WHERE NOT EXISTS(SELECT ig.groupe
                  FROM logiciel.inscriptions_groupes ig
                  WHERE ig.projet = p.num_projet
                    AND ig.etudiant = ic.etudiant
-                 ORDER BY p.cours)
-;
+                 ORDER BY p.cours);
 
 
 -----------------------------------------------------------------------------
@@ -323,9 +330,3 @@ WHERE p.num_projet = g.projet
   AND ig.projet = p.num_projet
 group by p.identifiant_projet, g.num_groupe, e.nom, e.prenom, g.taille_groupe, g.nombre_inscrits, e.id_etudiant
 ORDER BY g.num_groupe;
-
-DELETE
-FROM logiciel.inscriptions_groupes
-WHERE etudiant = 1
-  AND projet = 1
-RETURNING *;
