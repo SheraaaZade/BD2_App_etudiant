@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args){
         int choix;
         Scanner scanner = new Scanner(System.in);
         System.out.println("-------------------------------------------------------");
@@ -12,7 +12,6 @@ public class Main {
         AppEtudiant app = new AppEtudiant();
 
         do {
-            System.out.println("0- Executer les requêtes partie 2");
             System.out.println("1- Afficher mes cours");
             System.out.println("2- S'inscrire dans un groupe");
             System.out.println("3- Se désinscrire d'un groupe");
@@ -24,9 +23,6 @@ public class Main {
             choix = Integer.parseInt(scanner.nextLine());
 
             switch (choix) {
-                case 0:
-                    app.requeteDemo2();
-                    break;
                 case 1:
                     app.afficherMesCours();
                     break;

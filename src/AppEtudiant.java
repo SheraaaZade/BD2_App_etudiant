@@ -47,10 +47,10 @@ public class AppEtudiant {
         }
 
         try {
-            String url = "jdbc:postgresql://localhost:5432/logiciel";
-            //String url = "jdbc:postgresql://172.24.2.6:5432/dbchehrazadouazzani";
-            conn = DriverManager.getConnection(url, "postgres", "shera");
-            //    conn = DriverManager.getConnection(url, "chehrazadouazzani", "SQINPAG0B");
+         //   String url = "jdbc:postgresql://localhost:5432/logiciel";
+            String url = "jdbc:postgresql://172.24.2.6:5432/dbchehrazadouazzani";  //<<-- login Mariam
+        //    conn = DriverManager.getConnection(url, "postgres", "shera");
+                conn = DriverManager.getConnection(url, "chehrazadouazzani", "SQINPAG0B");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             System.out.println("Impossible de joindre le server !");
@@ -110,6 +110,7 @@ public class AppEtudiant {
                 if (rs.next()) {
                     if (BCrypt.checkpw(password, rs.getString(1))) {
                         System.out.println("--------> Connecté !  <---------");
+                        System.out.println("id: " + idEtudiant);
                         isConnecter = true;
                     } else {
                         System.out.println("---------> mot de passe erroné <---------");
@@ -308,7 +309,7 @@ public class AppEtudiant {
             psDemo.executeQuery();
             psDemo = conn.prepareStatement("SELECT logiciel.inserer_projets('projSQL', 'projet SQL', '2023-09-10', '2023-12-15', 'BINV2040')");
             psDemo.executeQuery();
-            psDemo = conn.prepareStatement("SELECT logiciel.inserer_projets('dsd', 'DSD', '2023-09-30', '2023-12-01', 'BINV1020')");
+            psDemo = conn.prepareStatement("SELECT logiciel.inserer_projets('DSD', 'DSD', '2023-09-30', '2023-12-01', 'BINV2040')");
             psDemo.executeQuery();
             psDemo = conn.prepareStatement("SELECT logiciel.creer_groupes('projSQL', 1, 2)");
             psDemo.executeQuery();
