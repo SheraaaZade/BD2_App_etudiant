@@ -7,7 +7,6 @@
     <list default="true" id="2c39a6db-bdce-4820-bed8-e06afe110404" name="Changes" comment="fixed some issues and SQL">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AppEtudiant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppEtudiant.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dbEtudiant.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/dbEtudiant.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +91,8 @@
       <workItem from="1670409556222" duration="3115000" />
       <workItem from="1670414741060" duration="376000" />
       <workItem from="1670474681325" duration="8653000" />
-      <workItem from="1670528671190" duration="8228000" />
+      <workItem from="1670528671190" duration="8991000" />
+      <workItem from="1670560593066" duration="4676000" />
     </task>
     <task id="LOCAL-00001" summary="add BCrypt and fixed issues">
       <created>1670280899066</created>
@@ -108,7 +108,14 @@
       <option name="project" value="LOCAL" />
       <updated>1670488150026</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="fixed some issues and SQL">
+      <created>1670537697527</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1670537697527</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

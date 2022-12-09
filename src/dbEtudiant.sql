@@ -1,6 +1,3 @@
---DROP SCHEMA IF EXISTS logiciel CASCADE;
---CREATE SCHEMA logiciel;
-
 -------------------------------------------------------------------
 ----Application etudiant
 -------------------------------------------------------------------
@@ -19,6 +16,7 @@ BEGIN
     IF (_id_etudiant IS NULL) then
         RAISE 'mail inexistant dans la DB ';
     end if;
+
     RETURN _id_etudiant;
 end;
 $$ LANGUAGE plpgsql;
@@ -59,24 +57,7 @@ DECLARE
     _id_groupe  INTEGER;
 BEGIN
     SELECT logiciel.chercher_id_projet(_identifiant_projet) INTO _num_projet;
-    --     SELECT p.num_projet
---     FROM logiciel.projets p
---     WHERE p.identifiant_projet = _identifiant_projet
---     INTO _num_projet;
---
---     IF (_num_projet IS NULL) THEN
---         RAISE 'identifiant projet inexistant !';
---     end if;
     SELECT logiciel.groupe_existe(_identifiant_projet, _num_groupe) INTO _id_groupe;
-    --     SELECT g.id_groupe
---     FROM logiciel.groupes g
---     WHERE g.num_groupe = _num_groupe
---       AND g.projet = _num_projet
---     INTO _id_groupe;
---
---     IF (_id_groupe IS NULL) THEN
---         RAISE 'Numéro de groupe inexistant';
---     end if;
 
     INSERT INTO logiciel.inscriptions_groupes(etudiant, groupe, projet)
     VALUES (_etudiant, _id_groupe, _num_projet);
@@ -263,6 +244,7 @@ BEGIN
     IF (_id_etudiant IS NULL) THEN
         RAISE 'Vous n êtes pas inscrit dans ce groupe de ce projet';
     end if;
+    RETURN NEW;
 end;
 $$ LANGUAGE plpgsql;
 

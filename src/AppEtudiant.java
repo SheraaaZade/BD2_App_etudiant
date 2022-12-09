@@ -302,7 +302,6 @@ public class AppEtudiant {
      */
     public void requeteDemo2() {
         try {
-
             psDemo = conn.prepareStatement("SELECT logiciel.inscrire_etudiant_cours('cd@student.vinci.be', 'BINV2040')");
             psDemo.executeQuery();
             psDemo = conn.prepareStatement("SELECT logiciel.inscrire_etudiant_cours('sf@student.vinci.be', 'BINV2040')");
@@ -317,13 +316,29 @@ public class AppEtudiant {
             psDemo.executeQuery();
             psDemo = conn.prepareStatement("SELECT logiciel.inscrire_etudiant_groupe(2, 1, 'projSQL')");
             psDemo.executeQuery();
+//
+//            for (String s : Arrays.asList(
+//                    "SELECT logiciel.inscrire_etudiant_cours('sf@student.vinci.be', 'BINV2040')",
+//                    "SELECT logiciel.inserer_projets('projSQL', 'projet SQL', '2023-09-10','2023-12-15', 'BINV2040')",
+//                    "SELECT logiciel.inserer_projets('dsd', 'DSD', '2023-09-30', '2023-12-01', 'BINV1020')",
+//                    "SELECT logiciel.creer_groupes('projSQL', 1, 1)",
+//                    "SELECT logiciel.inscrire_etudiant_groupe(1, 1, 'projSQL')",
+//                    "SELECT logiciel.inscrire_etudiant_groupe(2, 1, 'projSQL')",
+//                    "SELECT logiciel.inscrire_etudiant_cours('cd@student.vinci.be','BINV0000')",
+//                    "SELECT logiciel.inscrire_etudiant_cours('sf@student.vinci.be','BINV0000')",
+//                    "SELECT logiciel.inserer_projets('a','a','2020-01-01','2021-01-01','BINV0000')",
+//                    "SELECT logiciel.creer_groupes('a', 2, 1)")) {
+//                psDemo = conn.prepareStatement(s);
+//                psDemo.executeQuery();
+//            }
+
             //-----------------
-            psDemo = conn.prepareStatement("SELECT logiciel.inscrire_etudiant_cours('cd@student.vinci.be','BINV0000')");
-            psDemo.executeQuery();
-            psDemo = conn.prepareStatement("SELECT logiciel.inscrire_etudiant_cours('sf@student.vinci.be','BINV0000')");
-            psDemo.executeQuery();
-            psDemo = conn.prepareStatement("SELECT logiciel.inserer_projets('a','a','2020-01-01','2021-01-01','BINV0000')");
-            psDemo.executeQuery();
+//            psDemo = conn.prepareStatement("SELECT logiciel.inscrire_etudiant_cours('cd@student.vinci.be','BINV0000')");
+//            psDemo.executeQuery();
+//            psDemo = conn.prepareStatement("SELECT logiciel.inscrire_etudiant_cours('sf@student.vinci.be','BINV0000')");
+//            psDemo.executeQuery();
+//            psDemo = conn.prepareStatement("SELECT logiciel.inserer_projets('a','a','2020-01-01','2021-01-01','BINV0000')");
+//            psDemo.executeQuery();
 
 //            psDemo = conn.prepareStatement("SELECT logiciel.inserer_cours('BINV2140', 'SD2', 2, 3)");
 //            psDemo.executeQuery();
