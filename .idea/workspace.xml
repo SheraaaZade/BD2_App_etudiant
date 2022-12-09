@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c39a6db-bdce-4820-bed8-e06afe110404" name="Changes" comment="fixed code">
+    <list default="true" id="2c39a6db-bdce-4820-bed8-e06afe110404" name="Changes" comment="cleaned the main">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AppEtudiant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppEtudiant.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dbEtudiant.sql" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,7 +116,14 @@
       <option name="project" value="LOCAL" />
       <updated>1670537697527</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="cleaned the main">
+      <created>1670617523435</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1670617523435</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -140,6 +145,7 @@
     <MESSAGE value="refactored code + fixed some issues" />
     <MESSAGE value="cleaned code + fixed some issues and SQL" />
     <MESSAGE value="fixed some issues and SQL" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed some issues and SQL" />
+    <MESSAGE value="cleaned the main" />
+    <option name="LAST_COMMIT_MESSAGE" value="cleaned the main" />
   </component>
 </project>

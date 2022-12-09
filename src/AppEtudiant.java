@@ -44,10 +44,10 @@ public class AppEtudiant {
         }
 
         try {
-           String url = "jdbc:postgresql://localhost:5432/logiciel";
-           // String url = "jdbc:postgresql://172.24.2.6:5432/dbchehrazadouazzani";  //<<-- login Mariam
-           conn = DriverManager.getConnection(url, "postgres", "shera");
-              //  conn = DriverManager.getConnection(url, "chehrazadouazzani", "SQINPAG0B");
+            String url = "jdbc:postgresql://localhost:5432/logiciel";
+            // String url = "jdbc:postgresql://172.24.2.6:5432/dbchehrazadouazzani";  //<<-- login Mariam
+            conn = DriverManager.getConnection(url, "postgres", "shera");
+            //  conn = DriverManager.getConnection(url, "chehrazadouazzani", "SQINPAG0B");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             System.out.println("Impossible de joindre le server !");
@@ -57,7 +57,7 @@ public class AppEtudiant {
         seConnecter();
     }
 
-    public void menu(){
+    public void menu() {
         int choix;
 
         do {
@@ -307,8 +307,11 @@ public class AppEtudiant {
         System.out.print("Entrez identifiant du projet: ");
         String valeur = scanner.nextLine();
         try {
-            ps8.setString(1, valeur);
+            ps9.setString(1, valeur);
             ResultSet rs1 = ps9.executeQuery();
+            System.out.println("tst1");
+            rs1.next();
+            System.out.println("tst2");
             int idProjet = rs1.getInt(1);
             System.out.println();
             System.out.println("----------------------------Les projets où je n'ai pas encore de groupe--------------------------------------");
@@ -321,98 +324,15 @@ public class AppEtudiant {
             System.out.println();
             System.out.println("-----------------------------------------------------------------------------------------------");
             while (rs.next()) {
-                if (rs.getInt(1) == idProjet) {
-                    System.out.println("\t\t" + rs.getInt(2) + "\t\t\t\t" + rs.getString(3) + "\t\t\t\t\t"
-                            + rs.getString(4) + "\t\t\t\t" + rs.getString(5)
-                            + "\t\t\t\t" + rs.getInt(6));
+                if (rs.getInt(1) == idEtudiant && rs.getInt(2) == idProjet) {
+                    System.out.println("\t\t" + rs.getInt(3) + "\t\t\t\t" + rs.getString(4) + "\t\t\t\t\t"
+                            + rs.getString(5) + "\t\t\t\t" + rs.getString(6)
+                            + "\t\t\t\t" + rs.getInt(7));
                 }
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         System.out.println("-------------------------------------------------------------------------------------------------");
-    }
-
-    /**
-     * execute all the statements of the demo after creating a student
-     */
-    public void requeteDemo2() {
-        try {
-            psDemo = conn.prepareStatement("SELECT logiciel.inscrire_etudiant_cours('cd@student.vinci.be', 'BINV2040')");
-            psDemo.executeQuery();
-            psDemo = conn.prepareStatement("SELECT logiciel.inscrire_etudiant_cours('sf@student.vinci.be', 'BINV2040')");
-            psDemo.executeQuery();
-            psDemo = conn.prepareStatement("SELECT logiciel.inserer_projets('projSQL', 'projet SQL', '2023-09-10', '2023-12-15', 'BINV2040')");
-            psDemo.executeQuery();
-            psDemo = conn.prepareStatement("SELECT logiciel.inserer_projets('DSD', 'DSD', '2023-09-30', '2023-12-01', 'BINV2040')");
-            psDemo.executeQuery();
-            psDemo = conn.prepareStatement("SELECT logiciel.creer_groupes('projSQL', 1, 2)");
-            psDemo.executeQuery();
-            psDemo = conn.prepareStatement("SELECT logiciel.inscrire_etudiant_groupe(1, 1, 'projSQL')");
-            psDemo.executeQuery();
-            psDemo = conn.prepareStatement("SELECT logiciel.inscrire_etudiant_groupe(2, 1, 'projSQL')");
-            psDemo.executeQuery();
-//
-//            for (String s : Arrays.asList(
-//                    "SELECT logiciel.inscrire_etudiant_cours('sf@student.vinci.be', 'BINV2040')",
-//                    "SELECT logiciel.inserer_projets('projSQL', 'projet SQL', '2023-09-10','2023-12-15', 'BINV2040')",
-//                    "SELECT logiciel.inserer_projets('dsd', 'DSD', '2023-09-30', '2023-12-01', 'BINV1020')",
-//                    "SELECT logiciel.creer_groupes('projSQL', 1, 1)",
-//                    "SELECT logiciel.inscrire_etudiant_groupe(1, 1, 'projSQL')",
-//                    "SELECT logiciel.inscrire_etudiant_groupe(2, 1, 'projSQL')",
-//                    "SELECT logiciel.inscrire_etudiant_cours('cd@student.vinci.be','BINV0000')",
-//                    "SELECT logiciel.inscrire_etudiant_cours('sf@student.vinci.be','BINV0000')",
-//                    "SELECT logiciel.inserer_projets('a','a','2020-01-01','2021-01-01','BINV0000')",
-//                    "SELECT logiciel.creer_groupes('a', 2, 1)")) {
-//                psDemo = conn.prepareStatement(s);
-//                psDemo.executeQuery();
-//            }
-
-            //-----------------
-//            psDemo = conn.prepareStatement("SELECT logiciel.inscrire_etudiant_cours('cd@student.vinci.be','BINV0000')");
-//            psDemo.executeQuery();
-//            psDemo = conn.prepareStatement("SELECT logiciel.inscrire_etudiant_cours('sf@student.vinci.be','BINV0000')");
-//            psDemo.executeQuery();
-//            psDemo = conn.prepareStatement("SELECT logiciel.inserer_projets('a','a','2020-01-01','2021-01-01','BINV0000')");
-//            psDemo.executeQuery();
-
-//            psDemo = conn.prepareStatement("SELECT logiciel.inserer_cours('BINV2140', 'SD2', 2, 3)");
-//            psDemo.executeQuery();
-//            psDemo = conn.prepareStatement("SELECT logiciel.inscrire_etudiant_cours('ic@student.vinci.be', 'BINV2140')");
-//            psDemo.executeQuery();
-////
-//        -- SELECT logiciel.inscrire_etudiant_cours('cd@student.vinci.be', 'BINV2040');
-//        -- SELECT logiciel.inscrire_etudiant_cours('sf@student.vinci.be', 'BINV2040');
-//        --SELECT logiciel.inserer_etudiant('Cambron', 'Isabelle', 'ic@student.vinci.be','$2a$10$POaQZNkxmAhVNJG2TWvUF.vqN3tV3L2WiS2TTE7DZgMh9OY6DvNcG');
-//
-//        ne doit pas fonctionner le suivant:
-//        --SELECT logiciel.inscrire_etudiant_cours('ic@student.vinci.be', 'BINV2040');
-            //       --------------
-//        --SELECT logiciel.inscrire_etudiant_cours('sf@student.vinci.be', 'BINV2140');
-//        --SELECT logiciel.inscrire_etudiant_cours('cd@student.vinci.be', 'BINV2140');
-//        --
-//        --select logiciel.inserer_projets('projSD', 'projet SD2', '2023-03-01', '2023-04-01', 'BINV2140');
-//        -- --ne doit pas fonctionner le suivant:
-//        -- --SELECT logiciel.creer_groupes('projSD', 2, 2);
-//        --
-            psDemo = conn.prepareStatement("SELECT logiciel.creer_groupes('a', 2, 1)");
-            psDemo.executeQuery();
-//                --SELECT logiciel.creer_groupes('projSD', 3, 1);
-//                SELECT logiciel.creer_groupes('projSD', 3, 1);
-//        --
-//                -- --ne doit pas fonctionner le suivant:
-//        -- --SELECT logiciel.creer_groupes('projSD', 3, 1);
-//        --
-//                --SELECT logiciel.creer_groupes('projSD', 1, 2);
-//
-//        --ne doit pas fonctionner le suivant:
-//        --SELECT logiciel.creer_groupes('Javascript', 2, 2);
-//
-//
-//        -- SELECT logiciel.inscrire_etudiant_groupe(1, 1, 1);
-//        -- SELECT logiciel.valider_un_groupe(1);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
     }
 }
