@@ -32,9 +32,6 @@ public class AppEtudiant {
      */
 
 
-
-
-
     /**
      * connect to postgresql and prepare statements and connect the student
      */
@@ -47,18 +44,53 @@ public class AppEtudiant {
         }
 
         try {
-         //   String url = "jdbc:postgresql://localhost:5432/logiciel";
-            String url = "jdbc:postgresql://172.24.2.6:5432/dbchehrazadouazzani";  //<<-- login Mariam
-        //    conn = DriverManager.getConnection(url, "postgres", "shera");
-                conn = DriverManager.getConnection(url, "chehrazadouazzani", "SQINPAG0B");
+           String url = "jdbc:postgresql://localhost:5432/logiciel";
+           // String url = "jdbc:postgresql://172.24.2.6:5432/dbchehrazadouazzani";  //<<-- login Mariam
+           conn = DriverManager.getConnection(url, "postgres", "shera");
+              //  conn = DriverManager.getConnection(url, "chehrazadouazzani", "SQINPAG0B");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             System.out.println("Impossible de joindre le server !");
             System.exit(1);
         }
         preparedStatement();
-        //requeteDemo();
         seConnecter();
+    }
+
+    public void menu(){
+        int choix;
+
+        do {
+            System.out.println("1- Afficher mes cours");
+            System.out.println("2- S'inscrire dans un groupe");
+            System.out.println("3- Se désinscrire d'un groupe");
+            System.out.println("4- Afficher mes projets");
+            System.out.println("5- Afficher les projets où je ne suis pas inscris");
+            System.out.println("6- Afficher les groupes incomplets d'un projet");
+            System.out.println();
+            System.out.print("Entrez votre choix: ");
+            choix = Integer.parseInt(scanner.nextLine());
+
+            switch (choix) {
+                case 1:
+                    afficherMesCours();
+                    break;
+                case 2:
+                    sInscrireGroupe();
+                    break;
+                case 3:
+                    desinscrireGroupe();
+                    break;
+                case 4:
+                    afficherMesProjets();
+                    break;
+                case 5:
+                    afficherProjetPasEncoreGroupe();
+                    break;
+                case 6:
+                    compositionGroupesIncomplets();
+            }
+        } while (choix >= 0 && choix <= 6);
     }
 
     /**
@@ -86,7 +118,11 @@ public class AppEtudiant {
      * ps2 = SELECT logiciel.recuperer_mdp_etudiant(?)
      */
     private void seConnecter() {
+        System.out.println("-------------------------------------------------------");
+        System.out.println("--------------MENU APPLICATION ETUDIANT----------------");
+        System.out.println("-------------------------------------------------------");
         System.out.println("------------------SE CONNECTER-------------------------");
+        System.out.println("-------------------------------------------------------");
 
         boolean isConnecter = false;
         String mail, password;
@@ -110,7 +146,6 @@ public class AppEtudiant {
                 if (rs.next()) {
                     if (BCrypt.checkpw(password, rs.getString(1))) {
                         System.out.println("--------> Connecté !  <---------");
-                        System.out.println("id: " + idEtudiant);
                         isConnecter = true;
                     } else {
                         System.out.println("---------> mot de passe erroné <---------");
