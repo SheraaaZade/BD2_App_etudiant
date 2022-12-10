@@ -5,7 +5,6 @@ public class AppEtudiant {
     static Scanner scanner = new Scanner(System.in);
     private int idEtudiant;
     private static Connection conn;
-    private PreparedStatement psDemo;
     private PreparedStatement ps1;
     private PreparedStatement ps2;
     private PreparedStatement ps3;
@@ -15,22 +14,6 @@ public class AppEtudiant {
     private PreparedStatement ps7;
     private PreparedStatement ps8;
     private PreparedStatement ps9;
-
-    /*
-    LISTE DES QUESTIONS
-    1- afficher msg personnaliser pour chaque erreur?
-        si ajouter un etudiant dans un groupe mais que le groupe est complet et que l'étudiant
-         est déjà inscrit dans ce groupe quel msg afficher?
-
-         ERREUR: la valeur d'une clé dupliquée rompt la contrainte unique « inscriptions_groupes_etudiant_projet_key »
-         Détail : La clé « (etudiant, projet)=(1, 3) » existe déjà.
-         Où  : instruction SQL « INSERT INTO logiciel.inscriptions_groupes(etudiant, groupe, projet)
-            VALUES (_etudiant, _id_groupe, _num_projet) »
-        fonction PL/pgsql logiciel.inscrire_etudiant_groupe(integer,integer,character varying),
-
-     2-
-     */
-
 
     /**
      * connect to postgresql and prepare statements and connect the student
@@ -44,10 +27,10 @@ public class AppEtudiant {
         }
 
         try {
-            String url = "jdbc:postgresql://localhost:5432/logiciel";
-            // String url = "jdbc:postgresql://172.24.2.6:5432/dbchehrazadouazzani";  //<<-- login Mariam
-            conn = DriverManager.getConnection(url, "postgres", "shera");
-            //  conn = DriverManager.getConnection(url, "chehrazadouazzani", "SQINPAG0B");
+          //  String url = "jdbc:postgresql://localhost:5432/logiciel";
+            String url = "jdbc:postgresql://172.24.2.6:5432/dbchehrazadouazzani";
+          //  conn = DriverManager.getConnection(url, "postgres", "shera");
+              conn = DriverManager.getConnection(url, "mariammiclauri", "123");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             System.out.println("Impossible de joindre le server !");
@@ -132,7 +115,6 @@ public class AppEtudiant {
             System.out.print("Entrez votre mail: ");
             mail = scanner.nextLine();
             System.out.print("Entrez votre mot de passe: ");
-            //     String password = new String(console.readPassword("Entrez votre mot de passe: "));
             password = scanner.nextLine();
 
             try {
@@ -219,9 +201,6 @@ public class AppEtudiant {
      * ps5 = logiciel.retirer_etudiant(?,?)
      */
     public void desinscrireGroupe() {
-        //TODO - se désinscrire d'un groupe (app etudiant) -> complet reste à true, nombre_inscrit ne décremente pas,
-        // inscription groupe ne supprime pas le tuple && un etudiant qui n'est pas inscrit ne peut pas se désinscrire
-
         System.out.println("----------------Se désinscrire d'un groupe----------------------");
         try {
             ps5.setInt(1, idEtudiant);
@@ -239,6 +218,7 @@ public class AppEtudiant {
             System.out.println();
         } catch (SQLException se) {
             System.out.println(se.getMessage());
+            System.out.println("---------> Problème lors de la désinscription <---------");
         }
     }
 
@@ -275,8 +255,6 @@ public class AppEtudiant {
      */
     public void afficherProjetPasEncoreGroupe() {
         System.out.println("----------------------------Mes projets où je n'ai pas encore de groupe--------------------------------------");
-        //TODO la requête est fausse, normalement M.Damas pas inscrit au cours d'APOO
-
         try {
             ResultSet rs = ps7.executeQuery();
             ResultSetMetaData resultSetMetaData = rs.getMetaData();
@@ -309,9 +287,7 @@ public class AppEtudiant {
         try {
             ps9.setString(1, valeur);
             ResultSet rs1 = ps9.executeQuery();
-            System.out.println("tst1");
             rs1.next();
-            System.out.println("tst2");
             int idProjet = rs1.getInt(1);
             System.out.println();
             System.out.println("----------------------------Les projets où je n'ai pas encore de groupe--------------------------------------");
@@ -324,10 +300,9 @@ public class AppEtudiant {
             System.out.println();
             System.out.println("-----------------------------------------------------------------------------------------------");
             while (rs.next()) {
-                if (rs.getInt(1) == idEtudiant && rs.getInt(2) == idProjet) {
-                    System.out.println("\t\t" + rs.getInt(3) + "\t\t\t\t" + rs.getString(4) + "\t\t\t\t\t"
-                            + rs.getString(5) + "\t\t\t\t" + rs.getString(6)
-                            + "\t\t\t\t" + rs.getInt(7));
+                if (rs.getInt(1) == idProjet) {
+                    System.out.println("\t\t" + rs.getInt(2) + "\t\t\t\t" + rs.getString(3) + "\t\t\t\t\t"
+                            + rs.getString(4) + "\t\t\t\t" + rs.getString(5));
                 }
             }
         } catch (SQLException e) {
